@@ -164,7 +164,7 @@ projects/<Project ID>/
 └── releases/
 ```
 
-The Markdown records may be committed for audit history. Files copied into `collateral/` are ignored by Git by default because they may be sensitive or governed elsewhere. See the [agent project workspace](docs/agent-project-workspace.md) for record ownership and traceability conventions.
+Everything under `projects/` is local working output and is ignored by Git. Audit evidence belongs in Jira, GitHub releases, linked evidence repositories, and the DTR attached to the central project record—not in this framework repository. See the [agent project workspace](docs/agent-project-workspace.md) for record ownership and traceability conventions.
 
 ## Ground rules
 

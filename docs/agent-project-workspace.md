@@ -40,7 +40,7 @@ Never renumber an existing ID. When Jira items are created, add their keys besid
 
 In local-only mode, this project workspace is the working record. After content is entered in Jira, Jira becomes authoritative for detailed requirements, acceptance criteria, status, and routine history. The DTR remains the cross-system index.
 
-The Markdown project records may be version-controlled for local history. Copied files under `projects/*/collateral/` are ignored by Git by default because source collateral may be sensitive or already governed elsewhere.
+Everything under `projects/` is working output and must remain outside version control. The repository's `.gitignore` excludes the entire folder. Do not force-add project Markdown or collateral. Attach the completed DTR to the central project record and place other evidence in its appropriate governed system.
 
 Never invent a stakeholder decision, test result, Jira key, pull request, GitHub release, or approval. Use `Pending`, `Not run`, or `TBD`, and identify the needed owner or evidence.
 

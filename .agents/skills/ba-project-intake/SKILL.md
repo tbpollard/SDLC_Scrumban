@@ -17,6 +17,8 @@ Create a factual starting point for the team's portion of a project. Read [the w
 
 If `projects/<Project ID>/` already exists, do not rerun the initializer. Update the existing records carefully and preserve prior facts.
 
+Project workspaces are intentionally unversioned. Never stage, commit, or force-add anything under `projects/`.
+
 ## Scope discovery
 
 Read supplied collateral that is available and relevant. Draft the intended outcome, included work, exclusions, outside owners, dependencies, and open questions. Label interpretations as assumptions until a stakeholder confirms them.

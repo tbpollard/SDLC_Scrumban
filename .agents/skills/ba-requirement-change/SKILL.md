@@ -14,7 +14,7 @@ Read the requirement-change rules in [the operating guide](../../../docs/operati
 3. Classify it as:
    - **Routine clarification** when intended behavior, scope, risk, release allocation, testing, and approval remain valid.
    - **Material change** when any of those change.
-4. For a clarification, update the backlog and rely on file/Git history; do not add DTR ceremony.
+4. For a clarification, update the current backlog without adding change-log or DTR ceremony. After migration, Jira provides routine history.
 5. For a material change, assign the next stable `CHG-nnn`, add it to `change-log.md` and the DTR, update affected backlog content, and mark impacted validation or approval as needing review.
 6. Record the decision and approver only from evidence. Pending proposals remain `Pending`.
 

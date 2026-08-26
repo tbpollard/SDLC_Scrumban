@@ -33,5 +33,6 @@ At each invocation, inspect the existing workspace and continue from the next in
 - Stable requirement and acceptance-criteria IDs connect requirements, changes, tests, approvals, and releases.
 - A project may have any number of release records.
 - The DTR indexes evidence without duplicating it.
+- Everything under `projects/` is local working output; never stage, commit, or force-add it to Git.
 - Never represent planned work as tested, approved, released, or complete.
 - Never treat silence or meeting attendance as approval.
