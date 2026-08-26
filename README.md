@@ -35,6 +35,20 @@ A project may pass through Build–Validate–Approve multiple times when delive
 - [Jira requirements guide](docs/jira-requirements-guide.md)
 - [Delivery Traceability Record template](templates/delivery-traceability-record.md)
 - [Completed example](examples/delivery-traceability-record-example.md)
+- [Agent project workspace](docs/agent-project-workspace.md)
+
+## BA agent skills
+
+The repository includes a local-filesystem skill set under `.agents/skills`:
+
+- `ba-delivery-lifecycle` — coordinates the lifecycle and selects the next stage.
+- `ba-project-intake` — creates a project workspace from the Project ID, people, and collateral.
+- `ba-requirements-backlog` — turns discovery inputs into scoped, Jira-ready requirements and acceptance criteria.
+- `ba-requirement-change` — assesses and records requirement changes.
+- `ba-validation-signoff` — prepares validation by release and records actual results and approval.
+- `ba-release-closure` — traces GitHub releases and closes or transfers the team's scope.
+
+Invoke the coordinator for end-to-end work or a stage skill for a focused update. The skills use `projects/<Project ID>/` and do not require Jira or GitHub connectivity.
 
 ## Ground rules
 
@@ -44,4 +58,3 @@ A project may pass through Build–Validate–Approve multiple times when delive
 - Record material requirement changes; rely on Jira history for routine clarifications.
 - Record every production release that delivers part of the team's scope.
 - Add documentation only when risk, complexity, policy, or regulation requires it.
-

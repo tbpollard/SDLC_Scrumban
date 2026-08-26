@@ -1,0 +1,4 @@
+interface:
+  display_name: "BA Delivery Lifecycle"
+  short_description: "Guide a BA through the full local lifecycle"
+  default_prompt: "Use $ba-delivery-lifecycle to guide project delivery from intake through closure."

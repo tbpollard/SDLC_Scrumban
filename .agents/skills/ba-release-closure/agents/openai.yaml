@@ -1,0 +1,4 @@
+interface:
+  display_name: "BA Release & Closure"
+  short_description: "Trace releases and close team-owned scope"
+  default_prompt: "Use $ba-release-closure to record releases and close the team delivery record."

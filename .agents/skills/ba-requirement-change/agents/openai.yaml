@@ -1,0 +1,4 @@
+interface:
+  display_name: "BA Requirement Change"
+  short_description: "Assess and record requirement changes"
+  default_prompt: "Use $ba-requirement-change to assess and record a proposed requirement change."
