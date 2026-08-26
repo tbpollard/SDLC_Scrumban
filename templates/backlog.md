@@ -10,6 +10,7 @@
 - **Business owner:** `<name>`
 - **Scope boundary:** `<short description>`
 - **Source requirements:** `<links to project-context.md entries>`
+- **Business Requirements Acceptance:** `Pending / Approved / Superseded`
 
 ## Requirements and stories
 
@@ -31,3 +32,12 @@
 ## Questions preventing Ready
 
 - [ ] `<question>` — Owner: `<name>` — Affects: `<requirement ID>`
+
+## Implementation tasks
+
+### TSK-001 — `<short implementation task>`
+
+- **Jira key:** `TBD`
+- **Parent requirement:** `REQ-001`
+- **Description:** `<implementation work needed to satisfy the parent requirement>`
+- **Owner role:** `<Developer, Cloud Engineer, DBA, etc.>`

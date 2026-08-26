@@ -1,4 +1,4 @@
 interface:
   display_name: "BA Requirements & Backlog"
-  short_description: "Turn discovery inputs into Jira-ready work"
-  default_prompt: "Use $ba-requirements-backlog to turn discovery collateral into scoped Jira-ready requirements."
+  short_description: "Generate Jira CSV and requirements approval"
+  default_prompt: "Use $ba-requirements-backlog to create the fixed backlog, generate the Jira CSV, and manage requirements approval."

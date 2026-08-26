@@ -1,4 +1,4 @@
 interface:
   display_name: "BA Project Intake"
-  short_description: "Initialize a lightweight BA project workspace"
-  default_prompt: "Use $ba-project-intake to initialize a local project workspace from the supplied project inputs."
+  short_description: "Copy collateral and initialize project records"
+  default_prompt: "Use $ba-project-intake to copy all supplied collateral and initialize this project's fixed local workspace."

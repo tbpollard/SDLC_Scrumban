@@ -8,6 +8,8 @@
 | BA / delivery lead | `<name or TBD>` |
 | Business owner / product owner | `<name or TBD>` |
 | Status | Discovery |
+| Current lifecycle stage | 1 of 7 — Intake |
+| Security review required | `TBD / Yes / No` |
 | Last updated | `<date>` |
 
 ## Team delivery boundary
@@ -25,9 +27,9 @@
 
 ## Discovery collateral
 
-| Source | Provided by / date | Relevant scope or requirement | Notes |
+| Copied collateral | Provided by / date | Relevant scope or requirement | Notes |
 |---|---|---|---|
-| `<path, link, or document>` | `<name / date>` | `<brief relevance>` | `<authority, version, or limitation>` |
+| `collateral/<file>` | `<name / date>` | `<brief relevance>` | `<authority, version, or limitation>` |
 
 ## Dependencies, assumptions, and constraints
 

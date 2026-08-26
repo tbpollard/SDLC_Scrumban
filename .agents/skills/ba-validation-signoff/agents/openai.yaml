@@ -1,4 +1,4 @@
 interface:
   display_name: "BA Validation & Signoff"
-  short_description: "Plan validation and capture business approval"
-  default_prompt: "Use $ba-validation-signoff to validate acceptance criteria and record stakeholder approval."
+  short_description: "Manage project UAT and security signoffs"
+  default_prompt: "Use $ba-validation-signoff to manage project-level validation, UAT Acceptance, and Security Sign-off."

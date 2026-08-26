@@ -4,7 +4,7 @@ This repository defines a minimal, auditable lifecycle for software work deliver
 
 The lifecycle creates one traceability chain:
 
-**Project ID → Team scope → Jira work → Requirements → Validation → Approval → GitHub release(s)**
+**Project ID → Copied collateral → Requirements → Requirements approval → Delivery → Validation → Completion signoffs**
 
 ## Required records
 
@@ -20,14 +20,15 @@ Do not recreate information in multiple places. Link to the authoritative record
 
 | Stage | Minimum outcome |
 |---|---|
-| 1. Intake | Project ID and team contact are known. |
-| 2. Define | The team's scope, exclusions, stakeholders, and source requirements are recorded. |
-| 3. Refine | Jira work has testable acceptance criteria and is ready for development. |
-| 4. Build | Development is linked to Jira and follows the team's GitHub workflow. |
-| 5. Validate | Acceptance criteria are tested; exceptions are recorded. |
-| 6. Approve & release | The stakeholder accepts the delivered scope and the GitHub release is linked. |
+| 1. Intake | Supplied collateral is copied and the people/source inventory is usable. |
+| 2. Discovery & Requirements | Team scope, acceptance criteria, and Jira import CSV are Ready. |
+| 3. Business Requirements Approval | The business owner approves the current requirements baseline. This is a hard gate. |
+| 4. Delivery | Approved scope is implemented; any number of releases may be recorded. |
+| 5. Validation | Final delivered scope is tested against acceptance criteria. |
+| 6. Completion Signoffs | UAT, Security disposition, final reconciliation, and completion approval are recorded. |
+| 7. Complete | The DTR is attached and all team scope has a final disposition. |
 
-A project may pass through Build–Validate–Approve multiple times when delivery uses multiple releases.
+Releases are independent deployment events. A project may have multiple releases from multiple repositories before project completion, and each actual release records its change-management ticket.
 
 ## Start here
 
@@ -36,6 +37,7 @@ A project may pass through Build–Validate–Approve multiple times when delive
 - [Delivery Traceability Record template](templates/delivery-traceability-record.md)
 - [Completed example](examples/delivery-traceability-record-example.md)
 - [Agent project workspace](docs/agent-project-workspace.md)
+- [Agent output contract](docs/agent-output-contract.md)
 
 ## BA agent skills
 
@@ -43,10 +45,10 @@ The repository includes a local-filesystem skill set under `.agents/skills`:
 
 - `ba-delivery-lifecycle` — coordinates the lifecycle and selects the next stage.
 - `ba-project-intake` — creates a project workspace from the Project ID, people, and collateral.
-- `ba-requirements-backlog` — turns discovery inputs into scoped, Jira-ready requirements and acceptance criteria.
+- `ba-requirements-backlog` — creates the fixed backlog and Jira CSV, links returned Jira IDs, and records requirements approval.
 - `ba-requirement-change` — assesses and records requirement changes.
-- `ba-validation-signoff` — prepares validation by release and records actual results and approval.
-- `ba-release-closure` — traces GitHub releases and closes or transfers the team's scope.
+- `ba-validation-signoff` — manages project-level validation, UAT Acceptance, and Security Sign-off.
+- `ba-release-closure` — records independent releases with change tickets or completes final project closure.
 
 Invoke the coordinator for end-to-end work or a stage skill for a focused update. The skills use `projects/<Project ID>/` and do not require Jira or GitHub connectivity.
 
@@ -69,7 +71,17 @@ Our team owns the employee-enrollment portal changes. Identity and
 authentication changes are owned by another team.
 ```
 
-The coordinator will inspect the available information, initialize `projects/PRJ-1042/`, complete the current lifecycle stage, and identify the smallest next action. It will not mark testing, approval, or release complete without evidence.
+The coordinator will copy the supplied files into `projects/PRJ-1042/collateral/`, initialize the workspace, complete the current lifecycle stage, and identify the smallest next action. It will not advance past Business Requirements Approval or mark testing, signoffs, or releases complete without evidence.
+
+Every skill response displays a consistent status block:
+
+```text
+LIFECYCLE STATUS — PRJ-1042
+Stage: 3 of 7 — Business Requirements Approval
+Gate: BLOCKED — Business Requirements Acceptance is Pending
+Releases: 1 recorded; does not indicate project completion
+Next: Obtain Business Requirements Acceptance from the business owner.
+```
 
 You do not need to invoke every stage skill manually. Continue using the coordinator as the project progresses:
 
@@ -94,19 +106,37 @@ Team: Avery Chen (BA), Sam Rivera (Developer), Taylor Kim (DBA),
 Casey Jones (Cloud Engineer)
 Collateral: C:\project-intake\PRJ-1042\
 
-Reference the collateral in its current location; do not copy it.
+Copy every supplied file into the project collateral folder before using it.
 ```
 
 #### Create Jira-ready requirements
 
 ```text
-Use $ba-requirements-backlog for PRJ-1042. Review the project context and
-discovery collateral, then draft the team-owned epic, requirements, stories,
-and acceptance criteria. Clearly separate Identity-team work and list any
-questions that prevent a story from being Ready.
+Use $ba-requirements-backlog for PRJ-1042. Review the copied collateral, then
+create the team-owned epic, requirements, stories, implementation tasks, and
+acceptance criteria using the fixed template. Generate jira-backlog.csv and
+move the project to Business Requirements Approval when the backlog is Ready.
+Clearly separate Identity-team work.
 ```
 
-The output remains local until someone enters it in Jira. Add Jira keys to the local requirement IDs afterward; do not replace the stable `REQ` and `AC` IDs.
+Import `jira-backlog.csv` through Jira's CSV importer, map `Work item ID`, `Work type`, `Summary`, `Description`, `Parent`, and `Labels`, then use Jira's Validate action before import. The Epic appears before its children and acceptance criteria are included in Description.
+
+After import, export the created Jira work and provide the CSV back to the skill:
+
+```text
+Use $ba-requirements-backlog for PRJ-1042. Copy this Jira export into project
+collateral, create jira-id-map.csv, and link the Jira keys to the stable local
+IDs: C:\jira-exports\PRJ-1042-created-work.csv
+```
+
+Business Requirements Acceptance is required before Delivery:
+
+```text
+Use $ba-requirements-backlog for PRJ-1042. Record Jordan Smith's Business
+Requirements Acceptance from C:\approvals\PRJ-1042-requirements-email.msg.
+It covers REQ-001 through REQ-006 and their current acceptance criteria.
+Advance the lifecycle only if the evidence contains an explicit approval.
+```
 
 #### Assess a requirement change
 
@@ -119,36 +149,51 @@ identify testing and approval impacts, and leave the decision pending until
 Jordan Smith confirms it.
 ```
 
-Routine wording clarifications update the backlog only. Material changes receive a `CHG` ID and are reflected in the backlog, change log, DTR, and affected release validation.
+Routine wording clarifications update the backlog only. Material changes receive a `CHG` ID and are reflected in the backlog, Jira CSV, change log, DTR, and project validation. A changed approved baseline returns to Stage 3 for renewed requirements approval.
 
 #### Plan validation or record signoff
 
 ```text
-Use $ba-validation-signoff for PRJ-1042 release v1.1.0. Build the validation
-record from the acceptance criteria assigned to this release. The tests have
-not run yet, so leave results as Not run and draft a concise UAT request for
-Jordan Smith.
+Use $ba-validation-signoff for PRJ-1042. Build project-level validation.md from
+the final delivered acceptance criteria. The tests have not run yet, so leave
+results as Not run and draft a concise UAT request for Jordan Smith.
 ```
 
 After testing:
 
 ```text
-Use $ba-validation-signoff for PRJ-1042 release v1.1.0. Update the release
-record using C:\test-evidence\PRJ-1042\v1.1.0-results.md and the approval email
-saved at C:\approvals\PRJ-1042-v1.1.0.txt. Record only results and approval
-that those files support.
+Use $ba-validation-signoff for PRJ-1042. Copy and apply the test results,
+UAT-acceptance email, and Security approval below. Record the collateral type,
+approver, date, scope, and relative evidence path for each approval. If
+Security is not required, record the decision and rationale rather than
+assuming N/A.
+
+- C:\test-evidence\PRJ-1042-results.md
+- C:\approvals\PRJ-1042-uat.txt
+- C:\approvals\PRJ-1042-security.txt
 ```
 
 #### Record a release or assess closure
 
 ```text
-Use $ba-release-closure for PRJ-1042. Release v1.1.0 was published as GitHub
-tag v1.1.0 on 2026-09-18. Reconcile it with the backlog and validation record,
-update the DTR, and tell me whether our team-owned scope can close. Do not close
-the project if any requirement lacks a final disposition.
+Use $ba-release-closure for PRJ-1042. Record release REL-002 from repository
+https://github.example.com/payments/api, tag v1.1.0, deployed 2026-09-18 under
+change ticket CHG0098123. It delivered REQ-003, REQ-004, and TSK-006. Copy the
+deployment evidence from C:\changes\CHG0098123.pdf. Do not change the project
+lifecycle stage solely because this release occurred.
 ```
 
-Multiple releases are added as separate records under `projects/<Project ID>/releases/` and as separate rows in the DTR.
+Multiple releases from multiple repositories are added as separate records under `projects/<Project ID>/releases/` and as separate rows in the DTR.
+
+For project completion:
+
+```text
+Use $ba-release-closure for PRJ-1042 to assess project completion. Reconcile
+all team scope, verify requirements approval, final UAT acceptance, Security
+disposition, release change tickets, and DTR attachment. Record Project
+Completion Sign-off from C:\approvals\PRJ-1042-completion-email.msg only if it
+explicitly approves completion.
+```
 
 ### Expected local output
 
@@ -159,7 +204,10 @@ projects/<Project ID>/
 ├── project-context.md
 ├── delivery-traceability-record.md
 ├── backlog.md
+├── jira-backlog.csv
+├── jira-id-map.csv
 ├── change-log.md
+├── validation.md
 ├── collateral/
 └── releases/
 ```

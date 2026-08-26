@@ -5,9 +5,10 @@ from __future__ import annotations
 
 import argparse
 import re
-import shutil
 from datetime import date
 from pathlib import Path
+
+from copy_collateral import copy_sources, validate_sources
 
 
 PROJECT_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
@@ -41,7 +42,7 @@ def project_context(args: argparse.Namespace, collateral_entries: list[str]) -> 
     ) or "| TBD | TBD | Confirm project participants and responsibilities. |"
 
     collateral_rows = "\n".join(
-        f"| `{escape_cell(entry)}` | TBD | Review and classify | Original source or supplied copy |"
+        f"| `{escape_cell(entry)}` | TBD | Review and classify | Copied project collateral |"
         for entry in collateral_entries
     ) or "| TBD | TBD | Obtain discovery collateral or requirement sources. | Not supplied at intake. |"
 
@@ -55,6 +56,8 @@ def project_context(args: argparse.Namespace, collateral_entries: list[str]) -> 
 | BA / delivery lead | {escape_cell(args.ba_lead or 'TBD')} |
 | Business owner / product owner | {escape_cell(args.business_owner or 'TBD')} |
 | Status | Discovery |
+| Current lifecycle stage | 1 of 7 — Intake |
+| Security review required | TBD |
 | Last updated | {date.today().isoformat()} |
 
 ## Team delivery boundary
@@ -72,7 +75,7 @@ def project_context(args: argparse.Namespace, collateral_entries: list[str]) -> 
 
 ## Discovery collateral
 
-| Source | Provided by / date | Relevant scope or requirement | Notes |
+| Copied collateral | Provided by / date | Relevant scope or requirement | Notes |
 |---|---|---|---|
 {collateral_rows}
 
@@ -112,7 +115,6 @@ def main() -> int:
         "--team-member", action="append", default=[], type=parse_team_member, metavar="ROLE=NAME"
     )
     parser.add_argument("--collateral", action="append", default=[])
-    parser.add_argument("--copy-collateral", action="store_true")
     args = parser.parse_args()
 
     if not PROJECT_ID_PATTERN.fullmatch(args.project_id):
@@ -127,24 +129,19 @@ def main() -> int:
     project_dir = workspace_root / args.project_id
     if project_dir.exists():
         parser.error(f"workspace already exists: {project_dir}")
+    try:
+        validate_sources(args.collateral)
+    except ValueError as error:
+        parser.error(str(error))
 
     project_dir.mkdir(parents=True)
     (project_dir / "collateral").mkdir()
     (project_dir / "releases").mkdir()
 
-    collateral_entries: list[str] = []
-    for supplied in args.collateral:
-        source = Path(supplied).expanduser()
-        if args.copy_collateral:
-            if not source.is_file():
-                parser.error(f"collateral is not a readable file: {source}")
-            destination = project_dir / "collateral" / source.name
-            if destination.exists():
-                parser.error(f"duplicate collateral filename: {source.name}")
-            shutil.copy2(source, destination)
-            collateral_entries.append(destination.relative_to(project_dir).as_posix())
-        else:
-            collateral_entries.append(supplied)
+    try:
+        collateral_entries = copy_sources(project_dir, args.collateral)
+    except ValueError as error:
+        parser.error(str(error))
 
     templates = repo_root / "templates"
     (project_dir / "project-context.md").write_text(
@@ -157,6 +154,9 @@ def main() -> int:
     for template_name, output_name in (
         ("backlog.md", "backlog.md"),
         ("change-log.md", "change-log.md"),
+        ("validation.md", "validation.md"),
+        ("jira-backlog.csv", "jira-backlog.csv"),
+        ("jira-id-map.csv", "jira-id-map.csv"),
     ):
         content = (templates / template_name).read_text(encoding="utf-8")
         content = content.replace("<Project ID>", escape_cell(args.project_id))
