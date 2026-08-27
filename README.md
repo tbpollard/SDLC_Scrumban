@@ -52,6 +52,10 @@ The repository includes a local-filesystem skill set under `.agents/skills`:
 
 Invoke the coordinator for end-to-end work or a stage skill for a focused update. The skills use `projects/<Project ID>/` and do not require Jira or GitHub connectivity.
 
+### Microsoft Copilot Studio variation
+
+A SharePoint-backed variation for the Microsoft Copilot Studio Agents Experience is available under [copilot-studio](copilot-studio/setup-guide.md). It includes copy-ready agent instructions, six uploadable skill packages, the original Markdown templates, a SharePoint document-library contract, and configuration guidance. This variation maintains the same project artifacts in `Projects/<Project ID>/` within SharePoint rather than on a local filesystem.
+
 ### Quick start
 
 For a new project, invoke `ba-delivery-lifecycle` and provide whatever source information is currently available. The Project ID is the only value required to create the workspace; missing details remain `TBD` rather than being invented.
